@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/04 13:01:55 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/07 13:49:56 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ void	check_num(int argc, char **argv)
 	}
 }
 
-void	check_arg_order(int argc, long int **stack)
+int	check_arg_order(int argc, long int **stack)
 {
 	int	i;
 	int	j;
@@ -154,10 +154,10 @@ void	check_arg_order(int argc, long int **stack)
 	{
 		j = i + 1;
 		if (stack[0][i] > stack[0][j++])
-			return ;
+			return (-1);
 	}
 	printf("\nordenado\n");
-	exit (1);
+	return (1);
 }
 
 long int	*check_duplicate_order(int argc, char **argv)
@@ -203,34 +203,119 @@ void del_stack(long int ****stack, int pos)
 	}
 }
 
-void	sort_positive(long int ***stack_a, long int **stack_b)
+int	stack_len(long int ****stack)
+{
+	int	len;
+	
+	len = 0;
+	while (stack[0][0][0][len] <= INT_MAX)
+		++len;
+	return (len);
+}
+
+
+int	extract_unit(long int stack, int divisor)
+{
+	int	result;
+
+	if (stack < 10 && divisor > 10)
+		return (0);
+	if (stack * 10 < divisor)
+		return (0);
+	if (divisor == 0)
+		return (0);
+	result = stack % divisor;
+	while (result > 10)
+		result = result / 10;
+	return (result);
+}
+
+int	sort_positive_a_to_b(long int ****stack_a, long int ***stack_b, int pos, int len)
 {
 	int	i;
-	int	j;
-	int	pos;
 	int	unit;
+	int	divisor;
 
-	i = 0;
-	j = 0;
-	pos = 1;
-	unit = 0;
-	while (stack_a[0][0][i] <= INT_MAX)
+	divisor = 10;
+	while (--pos > 0)
+		divisor *= 10;
+	unit = -1;
+	while (++unit < 10)
 	{
-		printf("\nsa: %ld", stack_a[0][0][i]);
-		if(stack_a[0][0][i] > 0)
+		i = -1;
+		while (stack_a[0][0][0][++i] <= INT_MAX)
 		{
-			printf("\ndiv: %ld", stack_a[0][0][i] / (10 * pos));
-			if(stack_a[0][0][i] / (10 * pos) == unit)
+			if (stack_a[0][0][0][i] >= 0 && \
+			extract_unit(stack_a[0][0][0][i], divisor) == unit)
 			{
-				stack_b[0][j] = stack_a[0][0][i];
-				printf("\nsb: %ld", stack_b[0][j]);
-				del_stack(&(stack_a), i);
+				stack_b[0][0][len++] = stack_a[0][0][0][i];
+				del_stack(stack_a, i);
+				--i;
 			}
 		}
-		++pos;
-		++unit;
-		++i;
 	}
+	while (stack_b[0][0][len] <= INT_MAX)
+		stack_b[0][0][len++] = (long int) INT_MAX + 1;
+	return (stack_len(stack_a));
+}
+
+int	sort_positive_b_to_a(long int ****stack_a, long int ***stack_b, int pos, int len)
+{
+	int	i;
+	int	unit;
+	int	divisor;
+
+	divisor = 10;
+	while (--pos > 0)
+		divisor *= 10;
+	unit = -1;
+	while (++unit < 10)
+	{
+		i = -1;
+		while (stack_b[0][0][++i] <= INT_MAX)
+		{
+			if(stack_b[0][0][i] >= 0 && \
+			extract_unit(stack_b[0][0][i], divisor) == unit)
+			{
+				stack_a[0][0][0][len++] = stack_b[0][0][i];
+				del_stack(&(stack_b), i);
+				--i;
+			}
+		}
+	}
+	while (stack_a[0][0][0][len] <= INT_MAX)
+		stack_a[0][0][0][len++] = (long int) INT_MAX + 1;
+	return (stack_len(&stack_b));
+}
+
+void	sort_positive(int argc, long int ***stack_a, long int **stack_b)
+{
+	int	pos;
+	int	len;
+	int	i;
+
+	pos = 1;
+	len = 0;
+	while (check_arg_order(argc, *stack_a) != 1)
+	{
+		len = sort_positive_a_to_b(&(stack_a), &stack_b, pos, len);
+		++pos;
+		len = sort_positive_b_to_a(&(stack_a), &stack_b, pos, len);
+		++pos;
+	}
+	i = -1;
+	while (stack_a[0][0][++i] <= INT_MAX)
+	{
+		printf("\nsa2: %ld", stack_a[0][0][i]);
+	}
+	printf("\n");
+	i = -1;
+	while (stack_b[0][++i] <= INT_MAX)
+	{
+		printf("\nsb2: %ld", stack_b[0][i]);
+	}
+	printf("\n");
+	exit(1);
 }
 
 void	push_swap(int argc, char **argv, long int **stack_a)
@@ -242,14 +327,14 @@ void	push_swap(int argc, char **argv, long int **stack_a)
 		error_exit();
 	stack_b[argc - 1] = (long int) INT_MAX + 1;
 	if (argv)
-		sort_positive(&(stack_a), &stack_b);
+		sort_positive(argc, &(stack_a), &stack_b);
 	free(stack_b);
 }
 
 int	main(int argc, char **argv)
 {
 	long int	*stack_a;
-	
+
 	if (argc <= 1)
 		exit (-1);
 	else if (argc == 2)
