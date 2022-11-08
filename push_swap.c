@@ -6,60 +6,14 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/07 17:58:08 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/08 13:35:33 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 #include "stdio.h"
-# include <limits.h>
-/*
-int	get_min(t_list *lst, int min)
-{
-	if (lst->content < min)
-		return(lst->content);
-	return (min);
-}
+#include <limits.h>
 
-int	ft_lstiter(t_list *lst, int (*f)(void *, int min))
-{
-	int	min;
-
-	min = 2147483647;
-	if (!lst || !f)
-		return (-1);
-	while (lst)
-	{
-		min = f(lst->content, min);
-		lst = lst->next;
-	}
-	return (min);
-}
-
-bool	check_min_bottom(t_list *stack_a, int min)
-{
-	while (stack_a)
-	{
-		
-	}
-	if (stack_a->content == min)
-		return (true);
-	return (false);
-}
-
-void	push_swap(t_list *stack_a)
-{
-	t_list		*stack_b;
-	char		*sol;
-	const int	stack_len = ft_lstsize(&stack_a);
-	int			num_op;
-	int			min;
-	int			i;
-	int			index;
-
-	min = ft_lstiter(&stack_a, get_min(&stack_a, min));		
-}
-*/
 void	ft_bzero(void *s, size_t n)
 {
 	unsigned char	*ptr;
@@ -154,7 +108,7 @@ int	check_arg_order(int argc, long int **stack)
 		if (stack[0][i] > stack[0][i + 1])
 			return (-1);
 	}
-	printf("\nordenado\n");
+	//printf("\nordenado\n");
 	return (1);
 }
 
@@ -171,7 +125,7 @@ int	check_arg_order_neg(long int **stack)
 			return (-1);
 		++i;
 	}
-	printf("\nordenado neg\n");
+	//printf("\nordenado neg\n");
 	return (1);
 }
 
@@ -228,6 +182,15 @@ int	stack_len(long int ****stack)
 	return (len);
 }
 
+int	get_divisor(int pos)
+{
+	int	divisor;
+	
+	divisor = 10;
+	while (--pos > 0)
+		divisor *= 10;
+	return (divisor);
+}
 
 int	extract_unit(long int stack, int divisor)
 {
@@ -247,77 +210,106 @@ int	extract_unit(long int stack, int divisor)
 	return (result);
 }
 
-int	sort_positive_a_to_b(long int ****stack_a, long int ***stack_b, int pos, int len)
+int	push_a(void)
 {
-	int	i;
-	int	unit;
-	int	divisor;
+	//write(1, "pa\n", 3);
+	return (1);
+}
 
-	divisor = 10;
-	while (--pos > 0)
-		divisor *= 10;
+int	rotate_a(void)
+{
+	//write(1, "ra\n", 3);
+	return (1);
+}
+
+int	push_b(void)
+{
+	//write(1, "pb\n", 3);
+	return (1);
+}
+
+int	rotate_b(void)
+{
+	//write(1, "rb\n", 3);
+	return (1);
+}
+
+int	sort_positive_a_to_b(long int ****stack_a, long int ***stack_b, int pos, int len, int *num_op)
+{
+	int			i;
+	int			unit;
+	const int	divisor = get_divisor(pos);
+
 	unit = -1;
 	while (++unit < 10)
 	{
 		i = -1;
 		while (stack_a[0][0][0][++i] <= INT_MAX)
 		{
+			printf("\nsA[%d]: %ld", i, stack_a[0][0][0][i]);
 			if (stack_a[0][0][0][i] >= 0 && \
 			extract_unit(stack_a[0][0][0][i], divisor) == unit)
 			{
 				stack_b[0][0][len++] = stack_a[0][0][0][i];
+				printf("\nsb[%d]: %ld", len - 1, stack_b[0][0][len - 1]);
 				del_stack(stack_a, i);
 				--i;
+				*num_op += push_b();
 			}
+			else
+				*num_op += rotate_a();
 		}
 	}
 	while (stack_b[0][0][len] <= INT_MAX)
 		stack_b[0][0][len++] = (long int) INT_MAX + 1;
+	printf("\n\nnum_op posab: %d\n\n", *num_op);
 	return (stack_len(stack_a));
 }
 
-int	sort_positive_b_to_a(long int ****stack_a, long int ***stack_b, int pos, int len)
+int	sort_positive_b_to_a(long int ****stack_a, long int ***stack_b, int pos, int len, int *num_op)
 {
-	int	i;
-	int	unit;
-	int	divisor;
+	int			i;
+	int			unit;
+	const int	divisor = get_divisor(pos);
 
-	divisor = 10;
-	while (--pos > 0)
-		divisor *= 10;
 	unit = -1;
 	while (++unit < 10)
 	{
 		i = -1;
 		while (stack_b[0][0][++i] <= INT_MAX)
 		{
+			printf("\nsA[%d]: %ld", i, stack_a[0][0][0][i]);
 			if(stack_b[0][0][i] >= 0 && \
 			extract_unit(stack_b[0][0][i], divisor) == unit)
 			{
 				stack_a[0][0][0][len++] = stack_b[0][0][i];
+				printf("\nsb[%d]: %ld", len - 1, stack_b[0][0][len - 1]);
 				del_stack(&(stack_b), i);
 				--i;
+				*num_op += push_a();
 			}
+			else
+				*num_op += rotate_b();
 		}
 	}
 	while (stack_a[0][0][0][len] <= INT_MAX)
 		stack_a[0][0][0][len++] = (long int) INT_MAX + 1;
+	printf("\n\nnum_op posba: %d\n\n", *num_op);
 	return (stack_len(&stack_b));
 }
 
-void	sort_positive(int argc, long int ***stack_a, long int **stack_b)
+void	sort_positive(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int	pos;
 	int	len;
-	int	i;
 
 	pos = 1;
 	len = 0;
 	while (check_arg_order(argc, *stack_a) != 1)
 	{
-		len = sort_positive_a_to_b(&(stack_a), &stack_b, pos, len);
+		len = sort_positive_a_to_b(&(stack_a), &stack_b, pos, len, num_op);
 		++pos;
-		len = sort_positive_b_to_a(&(stack_a), &stack_b, pos, len);
+		len = sort_positive_b_to_a(&(stack_a), &stack_b, pos, len, num_op);
 		++pos;
 	}
 	return ;
@@ -348,79 +340,83 @@ int	get_max_pos(long int ***stack)
 	return (tam);
 }
 
-int	sort_negative_a_to_b(long int ****stack_a, long int ***stack_b, int pos, int len)
+int	sort_negative_a_to_b(long int ****stack_a, long int ***stack_b, int pos, int len, int *num_op)
 {
-	int	i;
-	int	unit;
-	int	divisor;
+	int			i;
+	int			unit;
+	const int	divisor = get_divisor(pos);
 
-	divisor = 10;
-	while (--pos > 0)
-		divisor *= 10;
 	unit = 10;
 	while (--unit > -1)
 	{
 		i = -1;
 		while (stack_a[0][0][0][++i] <= INT_MAX)
 		{
+			printf("\nsA[%d]: %ld", i, stack_a[0][0][0][i]);
 			if (stack_a[0][0][0][i] < 0 && \
 			extract_unit(stack_a[0][0][0][i], divisor) == unit)
 			{
 				stack_b[0][0][len++] = stack_a[0][0][0][i];
+				printf("\nsb[%d]: %ld", len - 1, stack_b[0][0][len - 1]);
 				del_stack(stack_a, i);
 				--i;
+				*num_op += push_b();
 			}
+			else
+				*num_op += rotate_a();
 		}
 	}
 	while (stack_b[0][0][len] <= INT_MAX)
 		stack_b[0][0][len++] = (long int) INT_MAX + 1;
+	printf("\n\nnum_op negab: %d\n\n", *num_op);
 	return (stack_len(stack_a));
 }
 
-int	sort_negative_b_to_a(long int ****stack_a, long int ***stack_b, int pos, int len)
+int	sort_negative_b_to_a(long int ****stack_a, long int ***stack_b, int pos, int len, int *num_op)
 {
-	int	i;
-	int	unit;
-	int	divisor;
-
-	divisor = 10;
-	while (--pos > 0)
-		divisor *= 10;
+	int			i;
+	int			unit;
+	const int	divisor = get_divisor(pos);
+	
 	unit = 10;
 	while (--unit > -1)
 	{
 		i = -1;
 		while (stack_b[0][0][++i] <= INT_MAX)
 		{
+			printf("\nsA[%d]: %ld", i, stack_a[0][0][0][i]);
 			if(stack_b[0][0][i] < 0 && \
 			extract_unit(stack_b[0][0][i], divisor) == unit)
 			{
 				stack_a[0][0][0][len++] = stack_b[0][0][i];
+				printf("\nsb[%d]: %ld", len - 1, stack_b[0][0][len - 1]);
 				del_stack(&(stack_b), i);
 				--i;
+				*num_op += push_a();
 			}
+			else
+				*num_op += rotate_b();
 		}
 	}
 	while (stack_a[0][0][0][len] <= INT_MAX)
 		stack_a[0][0][0][len++] = (long int) INT_MAX + 1;
+	printf("\n\nnum_op negba: %d\n\n", *num_op);
 	return (stack_len(&stack_b));
 }
 
-void	sort_negative(long int ***stack_a, long int **stack_b)
+void	sort_negative(long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int	pos;
 	int	len;
-	int	i;
-	int	op;
 
 	pos = get_max_pos(stack_a);
 	len = 0;
-	len = sort_negative_a_to_b(&(stack_a), &stack_b, pos, len);
-	len = sort_negative_b_to_a(&(stack_a), &stack_b, --pos, len);
+	len = sort_negative_a_to_b(&(stack_a), &stack_b, pos, len, num_op);
+	len = sort_negative_b_to_a(&(stack_a), &stack_b, --pos, len, num_op);
 	while (check_arg_order_neg(*stack_a) != 1 && pos > 1)
 	{
-		len = sort_negative_a_to_b(&(stack_a), &stack_b, --pos, len);
-		len = sort_negative_b_to_a(&(stack_a), &stack_b, --pos, len);
+		len = sort_negative_a_to_b(&(stack_a), &stack_b, --pos, len, num_op);
+		len = sort_negative_b_to_a(&(stack_a), &stack_b, --pos, len, num_op);
 	}
 	return ;
 }
@@ -428,24 +424,26 @@ void	sort_negative(long int ***stack_a, long int **stack_b)
 void	push_swap(int argc, char **argv, long int **stack_a)
 {
 	long int	*stack_b;
-	int			i;
+	static int	num_op;
 
+	num_op = 0;
 	stack_b = (long int *)ft_calloc(argc, sizeof(long int));
 	if (!stack_b)
 		error_exit();
 	stack_b[argc - 1] = (long int) INT_MAX + 1;
 	if (argv)
 	{
-		sort_negative(&(stack_a), &stack_b);
-		sort_positive(argc, &(stack_a), &stack_b);
+		sort_negative(&(stack_a), &stack_b, &num_op);
+		sort_positive(argc, &(stack_a), &stack_b, &num_op);
 	}
+	printf("\nop: %d\n", num_op);
 	free(stack_b);
-	i = -1;
-	while (stack_a[0][++i] <= INT_MAX)
-		printf("\nsapos: %ld", stack_a[0][i]);
-	printf("\n");
-	printf ("\nfin\n");
-	exit (1);
+	//i = -1;
+	//while (stack_a[0][++i] <= INT_MAX)
+	//	printf("\nsapos: %ld", stack_a[0][i]);
+	//printf("\n");
+	//printf ("\nfin\n");
+	return ;
 }
 
 int	main(int argc, char **argv)
@@ -458,7 +456,7 @@ int	main(int argc, char **argv)
 		return (0);
 	else
 		stack_a = check_argv(argc, argv);
-	printf("\nokey\n");
+	//printf("\nokey\n");
 	push_swap(argc, argv, &stack_a);
 	free(stack_a);
 	return (0);
