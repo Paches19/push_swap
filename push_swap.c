@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/08 20:28:44 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/10 10:57:42 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ int	stack_len(long int ****stack)
 	return (len);
 }
 
-int	get_min_stack(long int ***stack)
+int	get_min_stack(long int ***stack, int *min_pos)
 {
 	int	min;
 	int	i;
@@ -175,9 +175,27 @@ int	get_min_stack(long int ***stack)
 	while (stack[0][0][++i] <= INT_MAX)
 	{
 		if (stack[0][0][i] < min)
+		{
 			min = stack[0][0][i];
+			*min_pos = i;
+		}
 	}
 	return (min);
+}
+
+int	reverse_rotate_stack (long int ****stack)
+{
+	const int	len_stack = stack_len(stack);
+	long int	end;
+	int			i;
+
+	end = stack[0][0][0][len_stack - 1];
+	i = len_stack;
+	while (--i > 0 && stack[0][0][0][i] <= INT_MAX)
+		stack[0][0][0][i] = stack[0][0][0][i - 1];
+	stack[0][0][0][0] = end;
+	write(1, "rra\n", 4);
+	return (1);
 }
 
 int	rotate_stack (long int ****stack)
@@ -191,41 +209,56 @@ int	rotate_stack (long int ****stack)
 	while (++i < len_stack && stack[0][0][0][i] <= INT_MAX)
 		stack[0][0][0][i] = stack[0][0][0][i + 1];
 	stack[0][0][0][len_stack - 1] = ini;
+	write(1, "ra\n", 3);
+	return (1);
+}
+
+int	swap(long int ****stack)
+{
+	long int	temp;
+
+	temp = stack[0][0][0][0];
+	stack[0][0][0][0] = stack[0][0][0][1];
+	stack[0][0][0][1] = temp;
+	write(1, "sa\n", 3);
+	return (1);
+}
+
+int	push_b(long int ****stack_a, long int ***stack_b, int *i)
+{
+	stack_b[0][0][++*i] = stack_a[0][0][0][0];
+	del_stack(stack_a, 0);
+	write(1, "pb\n", 3);
 	return (1);
 }
 
 void	sort_stack_a(long int ***stack_a, long int **stack_b, int *num_op)
 {
-	int			min;
-	int			i;
-	long int	temp;
+	int	min;
+	int	i;
+	int	st_len;
+	int	min_pos;
 
 	i = -1;
-	while (stack_len(&stack_a) > 0)
+	st_len = stack_len(&stack_a);
+	while (st_len > 0)
 	{
-		min = get_min_stack(stack_a);
+		min = get_min_stack(stack_a, &min_pos);
 		if (stack_a[0][0][1] < stack_a[0][0][0])
-		{
-			temp = stack_a[0][0][0];
-			stack_a[0][0][0] = stack_a[0][0][1];
-			stack_a[0][0][1] = temp;
-			write(1, "sa\n", 3);
-			++*num_op;
-		}
+			*num_op += swap(&stack_a);
 		if (stack_a[0][0][0] == min)
-		{
-			stack_b[0][++i] = stack_a[0][0][0];
-			del_stack(&stack_a, 0);
-			++*num_op;
-		}
+			*num_op += push_b(&stack_a, &stack_b, &i);
 		else
 		{
 			if (stack_a[0][0][0] <= INT_MAX)
 			{
-				*num_op += rotate_stack(&stack_a);
-				write(1, "ra\n", 3);
+				if (min_pos <= st_len / 2)
+					*num_op += rotate_stack(&stack_a);
+				else
+					*num_op += reverse_rotate_stack(&stack_a);
 			}
 		}
+		st_len = stack_len(&stack_a);
 	}
 }
 
