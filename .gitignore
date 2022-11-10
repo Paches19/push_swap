@@ -9,3 +9,5 @@ main.c
 push_swap
 checker.*
 checker_linux
+checker
+push_swap_tester/

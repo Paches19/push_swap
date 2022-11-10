@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/10 10:57:42 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/10 12:54:49 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	*ft_calloc(size_t count, size_t size)
 
 void	error_exit(void)
 {
-	write(1, "Error\n", 6);
+	write(2, "Error\n", 6);
 	exit(-1);
 }
 
@@ -109,7 +109,9 @@ int	check_arg_order(int argc, long int **stack)
 		if (stack[0][i] > stack[0][i + 1])
 			return (-1);
 	}
-	exit (1);
+	//free(*stack);
+	//free(stack);
+	exit (0);
 }
 
 long int	*check_duplicate_order(int argc, char **argv)
@@ -262,7 +264,7 @@ void	sort_stack_a(long int ***stack_a, long int **stack_b, int *num_op)
 	}
 }
 
-void	push_b_to_a(long int ***stack_a, long int **stack_b, int *num_op)
+void	push_a(long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int	i;
 	int	j;
@@ -277,7 +279,7 @@ void	push_b_to_a(long int ***stack_a, long int **stack_b, int *num_op)
 	while (--i >= 0)
 	{
 		stack_a[0][0][++j] = stack_b[0][i];
-		write(1, "pb\n", 3);
+		write(1, "pa\n", 3);
 		++*num_op;
 	}
 }
@@ -285,7 +287,6 @@ void	push_b_to_a(long int ***stack_a, long int **stack_b, int *num_op)
 void	push_swap(int argc, long int **stack_a)
 {
 	long int	*stack_b;
-	int			i;
 	int			num_op;
 
 	num_op = 0;
@@ -294,13 +295,8 @@ void	push_swap(int argc, long int **stack_a)
 		error_exit();
 	stack_b[argc - 1] = (long int) INT_MAX + 1;
 	sort_stack_a(&(stack_a), &stack_b, &num_op);
-	push_b_to_a(&(stack_a), &stack_b, &num_op);
+	push_a(&(stack_a), &stack_b, &num_op);
 	free(stack_b);
-	i = -1;
-	while (stack_a[0][++i] <= INT_MAX)
-		printf("\nsapos: %ld", stack_a[0][i]);
-	printf("\nnum_op: %d", num_op);
-	printf("\n");
 	return ;
 }
 
