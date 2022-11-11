@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/10 12:54:49 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/11 11:03:26 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,6 @@ int	check_arg_order(int argc, long int **stack)
 		if (stack[0][i] > stack[0][i + 1])
 			return (-1);
 	}
-	//free(*stack);
-	//free(stack);
 	exit (0);
 }
 
@@ -234,25 +232,40 @@ int	push_b(long int ****stack_a, long int ***stack_b, int *i)
 	return (1);
 }
 
-void	sort_stack_a(long int ***stack_a, long int **stack_b, int *num_op)
+bool	check_end_sort_a(long int ***stack, int st_len)
 {
-	int	min;
 	int	i;
-	int	st_len;
-	int	min_pos;
+	
+	if (st_len == 0)
+		return (true);
+	i = -1;
+	while (++i < st_len)
+	{
+		if (stack[0][0][i] > stack[0][0][i + 1])
+			return (false);
+	}
+	return (true);
+}
+
+bool	sort_stack_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
+{
+	int		min;
+	int		i;
+	int		st_len;
+	int		min_pos;
 
 	i = -1;
-	st_len = stack_len(&stack_a);
-	while (st_len > 0)
+	st_len = argc - 1;
+	while (!check_end_sort_a(stack_a, st_len))
 	{
 		min = get_min_stack(stack_a, &min_pos);
-		if (stack_a[0][0][1] < stack_a[0][0][0])
+		if (stack_a[0][0][1] < stack_a[0][0][0] && min_pos > st_len / 2)
 			*num_op += swap(&stack_a);
 		if (stack_a[0][0][0] == min)
 			*num_op += push_b(&stack_a, &stack_b, &i);
 		else
 		{
-			if (stack_a[0][0][0] <= INT_MAX)
+			if (stack_a[0][0][0] <= INT_MAX && stack_a[0][0][1] <= INT_MAX)
 			{
 				if (min_pos <= st_len / 2)
 					*num_op += rotate_stack(&stack_a);
@@ -262,18 +275,17 @@ void	sort_stack_a(long int ***stack_a, long int **stack_b, int *num_op)
 		}
 		st_len = stack_len(&stack_a);
 	}
+	if (st_len == argc - 1)
+		return (false);
+	return (true);
 }
 
-void	push_a(long int ***stack_a, long int **stack_b, int *num_op)
+void	push_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int	i;
 	int	j;
-	long int	***s;
-	long int	****stack;
 
-	s = &stack_b;
-	stack = &s;
-	i = stack_len(stack);
+	i = argc - 1 - stack_len(&stack_a);
 	
 	j = -1;
 	while (--i >= 0)
@@ -288,14 +300,16 @@ void	push_swap(int argc, long int **stack_a)
 {
 	long int	*stack_b;
 	int			num_op;
+	bool		pa;
 
 	num_op = 0;
 	stack_b = (long int *)ft_calloc(argc, sizeof(long int));
 	if (!stack_b)
 		error_exit();
 	stack_b[argc - 1] = (long int) INT_MAX + 1;
-	sort_stack_a(&(stack_a), &stack_b, &num_op);
-	push_a(&(stack_a), &stack_b, &num_op);
+	pa = sort_stack_a(argc, &(stack_a), &stack_b, &num_op);
+	if (pa)
+		push_a(argc, &(stack_a), &stack_b, &num_op);
 	free(stack_b);
 	return ;
 }
