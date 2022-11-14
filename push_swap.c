@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/14 10:10:02 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/14 12:21:39 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,7 +235,7 @@ int	push_b(long int ****stack_a, long int ***stack_b, int *i)
 bool	check_end_sort_a(long int ***stack, int st_len)
 {
 	int	i;
-	
+
 	if (st_len == 0)
 		return (true);
 	i = -1;

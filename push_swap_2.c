@@ -1,19 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_swap.c                                        :+:      :+:    :+:   */
+/*   push_swap_2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/13 13:06:20 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/14 18:16:00 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
-#include "stdio.h"
-#include <limits.h>
-
 
 void	ft_bzero(void *s, size_t n)
 {
@@ -102,7 +99,7 @@ void	check_num(int argc, char **argv)
 int	check_arg_order(int argc, long int **stack)
 {
 	int	i;
-	
+
 	i = -1;
 	while (++i < argc - 2)
 	{
@@ -140,7 +137,7 @@ long int	*check_duplicate_order(int argc, char **argv)
 long int	*check_argv(int argc, char **argv)
 {
 	long int	*stack;
-	
+
 	check_num(argc, argv);
 	stack = check_duplicate_order(argc, argv);
 	return (stack);
@@ -148,9 +145,18 @@ long int	*check_argv(int argc, char **argv)
 
 void del_stack(long int ****stack, int pos)
 {
-	while(stack[0][0][0][pos] <= INT_MAX)
+	while (stack[0][0][0][pos] <= INT_MAX)
 	{
 		stack[0][0][0][pos] = stack[0][0][0][pos + 1];
+		++pos;
+	}
+}
+
+void del_stack_b(long int ***stack, int pos)
+{
+	while (stack[0][0][pos] <= INT_MAX)
+	{
+		stack[0][0][pos] = stack[0][0][pos + 1];
 		++pos;
 	}
 }
@@ -158,9 +164,19 @@ void del_stack(long int ****stack, int pos)
 int	stack_len(long int ****stack)
 {
 	int	len;
-	
+
 	len = 0;
 	while (stack[0][0][0][len] <= INT_MAX)
+		++len;
+	return (len);
+}
+
+int	stack_len_b(long int ***stack)
+{
+	int	len;
+
+	len = 0;
+	while (stack[0][0][len] <= INT_MAX)
 		++len;
 	return (len);
 }
@@ -265,157 +281,134 @@ int	swap_b(long int ***stack)
 	return (1);
 }
 
-int	push_b(long int ****stack_a, long int ***stack_b, int i)
+int	p_a(long int ****stack_a, long int ***stack_b)
 {
-	stack_b[0][0][i] = stack_a[0][0][0][0];
+	stack_a[0][0][0][stack_len(&stack_b) - 1] = stack_b[0][0][0];
+	del_stack_b(stack_b, 0);
+	write(1, "pa\n", 3);
+	return (1);
+}
+
+int	push_b(long int ****stack_a, long int ***stack_b)
+{
+	stack_b[0][0][stack_len(&stack_b)] = stack_a[0][0][0][0];
 	del_stack(stack_a, 0);
 	write(1, "pb\n", 3);
 	return (1);
 }
 
-int	push_a(long int ****stack_a, long int ***stack_b, int i)
-{
-	stack_a[0][0][0][++i] = stack_b[0][0][0];
-	del_stack(&stack_b, 0);
-	write(1, "pa\n", 3);
-	return (1);
-}
-
-bool	check_end_sort(long int ***stack, int st_len)
+bool	check_end_sort_a(long int ***stack)
 {
 	int	i;
-	
-	if (st_len == 0)
-		return (true);
+
 	i = -1;
-	while (++i < st_len)
+	while (stack[0][0][++i] < INT_MAX)
 	{
-		if (stack[0][0][i] >= stack[0][0][i + 1])
+		if (stack[0][0][i] > stack[0][0][i + 1])
 			return (false);
 	}
 	return (true);
 }
 
-bool	sort_stack_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
+void	sort_stack_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int		min;
-	int		i;
 	int		st_len;
 	int		min_pos;
-	//int		j;
 
-	i = -1;
 	st_len = argc - 1;
-	/*j = -1;
-	while (stack_a[0][0][++j] <= INT_MAX)
-		printf("\nsa2: %ld", stack_a[0][0][j]);
-	printf("\n sort?: %d\n", check_end_sort(stack_a, st_len));*/
-	while (!check_end_sort(stack_a, st_len))
+	while (!check_end_sort_a(stack_a))
 	{
 		min = get_min_stack(stack_a, &min_pos);
 		if (stack_a[0][0][1] < stack_a[0][0][0] && min_pos > st_len / 2)
 			*num_op += swap(&stack_a);
 		if (stack_a[0][0][0] == min)
-			*num_op += push_b(&stack_a, &stack_b, ++i);
+			*num_op += push_b(&stack_a, &stack_b);
 		else
 		{
-			if (stack_a[0][0][0] <= INT_MAX && stack_a[0][0][1] <= INT_MAX)
-			{
-				if (min_pos <= st_len / 2)
-					*num_op += rotate_stack(&stack_a);
-				else
-					*num_op += reverse_rotate_stack(&stack_a);
-			}
+			if (min_pos <= st_len / 2 && stack_a[0][0][1] <= INT_MAX)
+				*num_op += rotate_stack(&stack_a);
+			else if (stack_a[0][0][1] <= INT_MAX)
+				*num_op += reverse_rotate_stack(&stack_a);
 		}
 		st_len = stack_len(&stack_a);
 	}
-	/*j = -1;
-	while (stack_a[0][0][++j] <= INT_MAX)
-		printf("\nsafin: %ld", stack_a[0][0][j]);
-	j = -1;
-	while (stack_b[0][++j] <= INT_MAX)
-		printf("\nsbsort1: %ld", stack_b[0][j]);	
-	exit (1);*/
-	if (st_len == argc - 1)
-		return (false);
-	return (true);
 }
 
-int	reorder_stack_a(long int ****stack)
+void	reverse_array_b(long int ***stack_b)
 {
-	const int	len_stack = stack_len(stack);
-	long int	ini;
 	int			i;
+	int			j;
+	long int	temp;
 
-	ini = stack[0][0][0][0];
-	i = -1;
-	while (++i < len_stack && stack[0][0][0][i] <= INT_MAX)
-		stack[0][0][0][i] = stack[0][0][0][i + 1];
-	stack[0][0][0][len_stack - 1] = ini;
-	return (1);
+	i = 0;
+	j = stack_len_b(stack_b) - 1;
+	while (i < j)
+	{
+		temp = stack_b[0][0][i];
+		stack_b[0][0][i++] = stack_b[0][0][j];
+		stack_b[0][0][j--] = temp;
+	}
 }
 
-bool	sort(int argc, long int ***stack_a, long int **stack_b, int *num_op)
+void	init_sort(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int		min;
+	int		st_len;
 	int		min_pos;
-	int		push;
-	int		j;
+	int		i;
 
-	push = 31;
-	while (stack_a[0][0][0] <= INT_MAX && --push >= 0)
-	{
-		if (stack_a[0][0][0] == 0)
-			*num_op += rotate_stack(&stack_a);
-		*num_op += push_b(&stack_a, &stack_b, push);
-	}
-	j = -1;
-	while (stack_b[0][++j] <= INT_MAX)
-	{
-		if (stack_b[0][j] == 0)
-			stack_b[0][j] = (long int) INT_MAX + 1;
-	}
-	while(stack_b[0][0] != (long int) INT_MAX + 1)
+	i = -1;
+	while (++i < 30)
+		*num_op += push_b(&stack_a, &stack_b);
+	// i = -1;
+	// while (stack_b[0][++i] <= INT_MAX)
+	// 	printf("\nsb pre: %ld", stack_b[0][i]);
+	reverse_array_b(&stack_b);
+	// printf("\n\n");
+	// i = -1;
+	// while (stack_b[0][++i] <= INT_MAX)
+	// 	printf("\nsb post: %ld", stack_b[0][i]);
+	// exit(1);
+	st_len = argc - 1;
+	while (stack_len_b(&stack_b) != 0)
 	{
 		min = get_min_stack(&stack_b, &min_pos);
-		if (stack_b[0][1] < stack_b[0][0])
+		if (stack_b[0][1] < stack_b[0][0] && min_pos > st_len / 2)
 			*num_op += swap_b(&stack_b);
 		if (stack_b[0][0] == min)
-			*num_op += push_a(&stack_a, &stack_b, stack_len(&stack_a) - 1);
+			*num_op += p_a(&stack_a, &stack_b);
 		else
 		{
-			if (stack_b[0][0] <= INT_MAX && stack_b[0][1] <= INT_MAX && min_pos < (argc - 1 - stack_len(&stack_a)) / 2)
+			if (min_pos <= st_len / 2 && stack_b[0][1] <= INT_MAX)
 				*num_op += rotate_stack_b(&stack_b);
-			else if (stack_b[0][0] <= INT_MAX && stack_b[0][1] <= INT_MAX)
+			else if (stack_b[0][1] <= INT_MAX)
 				*num_op += reverse_rotate_stack_b(&stack_b);
 		}
+		st_len = stack_len_b(&stack_b);
 	}
-	//while (++push < 31)
-		//reorder_stack_a(&stack_a);
-	j = -1;
-	while (stack_a[0][0][++j] <= INT_MAX)
-		printf("\nsasort1: %ld", stack_a[0][0][j]);
-	j = -1;
-	while (stack_b[0][++j] <= INT_MAX)
-		printf("\nsbsort1: %ld", stack_b[0][j]);
-	printf("\n");
-	exit (1);
-	return (sort_stack_a(argc, stack_a, stack_b, num_op));
+	// i = -1;
+	// while (stack_b[0][++i] <= INT_MAX)
+	// 	printf("\nsb fin: %ld", stack_b[0][i]);
+	i = -1;
+	printf("\n\n");
+	while (stack_a[0][0][++i] <= INT_MAX)
+		printf("\nsa fin: %ld", stack_a[0][0][i]);
+	exit(1);
 }
 
-void	push_all_to_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
+void	push_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int	i;
+	int	j;
 
 	i = argc - 1 - stack_len(&stack_a);
+	j = -1;
 	while (--i >= 0)
 	{
-		if (stack_b[0][i] <= INT_MAX)
-		{
-			stack_a[0][0][stack_len(&stack_a) - 1] = stack_b[0][i];
-			write(1, "pa\n", 3);
-			++*num_op;
-		}
+		stack_a[0][0][++j] = stack_b[0][i];
+		write(1, "pa\n", 3);
+		++*num_op;
 	}
 }
 
@@ -423,21 +416,19 @@ void	push_swap(int argc, long int **stack_a)
 {
 	long int	*stack_b;
 	int			num_op;
-	bool		pa;
-	//int			j;
+	int			i;
 
 	num_op = 0;
 	stack_b = (long int *)ft_calloc(argc, sizeof(long int));
 	if (!stack_b)
 		error_exit();
 	stack_b[argc - 1] = (long int) INT_MAX + 1;
-	pa = sort(argc, &(stack_a), &stack_b, &num_op);
-	if (pa)
-		push_all_to_a(argc, &(stack_a), &stack_b, &num_op);
-	/*printf("\nnum_op: %d", num_op);
-	j = -1;
-	while (stack_a[0][++j] <= INT_MAX)
-		printf("\nsultimopush: %ld", stack_a[0][j]);*/
+	i = -1;
+	while (stack_b[++i] < INT_MAX)
+		stack_b[i] = (long int) INT_MAX + 1;
+	init_sort(argc, &(stack_a), &stack_b, &num_op);
+	sort_stack_a(argc, &(stack_a), &stack_b, &num_op);
+	push_a(argc, &(stack_a), &stack_b, &num_op);
 	free(stack_b);
 	return ;
 }
