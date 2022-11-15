@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/14 18:16:00 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/15 09:29:24 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ long int	*check_duplicate_order(int argc, char **argv)
 	stack = (long int *)ft_calloc(sizeof(long int), argc);
 	if (!stack)
 		error_exit();
-	stack[argc - 1] = (long int) INT_MAX + 1;
+	stack[argc - 1] = (long int) INT_MAX + 2;
 	i = 0;
 	while (++i < argc)
 	{
@@ -188,7 +188,7 @@ int	get_min_stack(long int ***stack, int *min_pos)
 
 	min = INT_MAX;
 	i = -1;
-	while (stack[0][0][++i] <= INT_MAX)
+	while (stack[0][0][++i] <= (long int) INT_MAX + 1)
 	{
 		if (stack[0][0][i] < min)
 		{
@@ -351,52 +351,6 @@ void	reverse_array_b(long int ***stack_b)
 	}
 }
 
-void	init_sort(int argc, long int ***stack_a, long int **stack_b, int *num_op)
-{
-	int		min;
-	int		st_len;
-	int		min_pos;
-	int		i;
-
-	i = -1;
-	while (++i < 30)
-		*num_op += push_b(&stack_a, &stack_b);
-	// i = -1;
-	// while (stack_b[0][++i] <= INT_MAX)
-	// 	printf("\nsb pre: %ld", stack_b[0][i]);
-	reverse_array_b(&stack_b);
-	// printf("\n\n");
-	// i = -1;
-	// while (stack_b[0][++i] <= INT_MAX)
-	// 	printf("\nsb post: %ld", stack_b[0][i]);
-	// exit(1);
-	st_len = argc - 1;
-	while (stack_len_b(&stack_b) != 0)
-	{
-		min = get_min_stack(&stack_b, &min_pos);
-		if (stack_b[0][1] < stack_b[0][0] && min_pos > st_len / 2)
-			*num_op += swap_b(&stack_b);
-		if (stack_b[0][0] == min)
-			*num_op += p_a(&stack_a, &stack_b);
-		else
-		{
-			if (min_pos <= st_len / 2 && stack_b[0][1] <= INT_MAX)
-				*num_op += rotate_stack_b(&stack_b);
-			else if (stack_b[0][1] <= INT_MAX)
-				*num_op += reverse_rotate_stack_b(&stack_b);
-		}
-		st_len = stack_len_b(&stack_b);
-	}
-	// i = -1;
-	// while (stack_b[0][++i] <= INT_MAX)
-	// 	printf("\nsb fin: %ld", stack_b[0][i]);
-	i = -1;
-	printf("\n\n");
-	while (stack_a[0][0][++i] <= INT_MAX)
-		printf("\nsa fin: %ld", stack_a[0][0][i]);
-	exit(1);
-}
-
 void	push_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 {
 	int	i;
@@ -410,6 +364,38 @@ void	push_a(int argc, long int ***stack_a, long int **stack_b, int *num_op)
 		write(1, "pa\n", 3);
 		++*num_op;
 	}
+}
+
+void	min_to_parse_stack(long int ***stack_a, long int **parse_stack, \
+int min, int i)
+{
+	int	j;
+
+	j = 0;
+	while (stack_a[0][0][j] != min)
+		++j;
+	parse_stack[0][j] = i;
+	stack_a[0][0][j] = (long int) INT_MAX + 1;
+}
+
+long int	*map_stack_a(int argc, long int **stack_a)
+{
+	long int	*parse_stack;
+	int			min;
+	int			min_pos;
+	int			i;
+
+	parse_stack = (long int *)ft_calloc(argc, sizeof(long int));
+	parse_stack[argc - 1] = (long int) INT_MAX + 2;
+	i = 0;
+	min_pos = 0;
+	while (i < argc - 1)
+	{
+		min = get_min_stack(&stack_a, &min_pos);
+		min_to_parse_stack(&stack_a, &parse_stack, min, i);
+		++i;
+	}
+	return (parse_stack);	
 }
 
 void	push_swap(int argc, long int **stack_a)
@@ -426,7 +412,7 @@ void	push_swap(int argc, long int **stack_a)
 	i = -1;
 	while (stack_b[++i] < INT_MAX)
 		stack_b[i] = (long int) INT_MAX + 1;
-	init_sort(argc, &(stack_a), &stack_b, &num_op);
+	stack_a[0] = map_stack_a(argc, stack_a);
 	sort_stack_a(argc, &(stack_a), &stack_b, &num_op);
 	push_a(argc, &(stack_a), &stack_b, &num_op);
 	free(stack_b);
