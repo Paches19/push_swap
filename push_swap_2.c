@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/16 12:54:51 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/18 10:44:57 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,6 +416,24 @@ int	get_next_group_len(int argc, int group_len)
 	return (group_len);
 }
 
+int	get_max_stack(long int ***stack, int *max_pos)
+{
+	int	max;
+	int	i;
+
+	max = INT_MIN;
+	i = -1;
+	while (stack[0][0][++i] <= (long int) INT_MAX + 1)
+	{
+		if (stack[0][0][i] > max)
+		{
+			max = stack[0][0][i];
+			*max_pos = i;
+		}
+	}
+	return (max);
+}
+
 void	groups_to_b(int argc, long int ***stack_a, long int **stack_b)
 {
 	int		num;
@@ -467,24 +485,6 @@ long int	*map_stack_a(int argc, long int **stack_a)
 	return (parse_stack);
 }
 
-int	get_max_stack(long int ***stack, int *max_pos)
-{
-	int	max;
-	int	i;
-
-	max = INT_MIN;
-	i = -1;
-	while (stack[0][0][++i] <= (long int) INT_MAX + 1)
-	{
-		if (stack[0][0][i] > max)
-		{
-			max = stack[0][0][i];
-			*max_pos = i;
-		}
-	}
-	return (max);
-}
-
 void	push_to_a(long int ***stack_a, long int **stack_b)
 {
 	int	max;
@@ -511,6 +511,21 @@ void	push_to_a(long int ***stack_a, long int **stack_b)
 	}
 }
 
+void	sort_short(long int ***stack_a)
+{
+	int	max_pos;
+	int	max;
+
+	while (!check_end_sort_a(stack_a))
+	{
+		max = get_max_stack(stack_a, &max_pos);
+		if (stack_a[0][0][0] == max)
+			rotate_stack(&stack_a);
+		else
+			swap(&stack_a);
+	}
+}
+
 void	push_swap(int argc, long int **stack_a)
 {
 	long int	*stack_b;
@@ -524,7 +539,10 @@ void	push_swap(int argc, long int **stack_a)
 	while (stack_b[++i] <= INT_MAX)
 		stack_b[i] = (long int) INT_MAX + 2;
 	stack_a[0] = map_stack_a(argc, stack_a);
-	groups_to_b(argc, &stack_a, &stack_b);
+	if (argc == 4)
+		sort_short(&stack_a);
+	else
+		groups_to_b(argc, &stack_a, &stack_b);
 	push_to_a(&stack_a, &stack_b);
 	free(stack_b);
 	return ;
