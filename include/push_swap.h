@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:51:30 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/22 14:04:52 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/22 16:15:51 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void		check_num(int argc, char **argv);
 int			get_min_stack(long int ***stack, int *min_pos);
 int			num_to_push(long int ***stack, int *num_pos, int group_len, \
 int argc);
-int			decide_group_len(int argc);
 int			get_next_group_len(int argc, int group_len);
 int			get_max_stack(long int ***stack, int *max_pos);
 
