@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/22 13:30:31 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/11/22 13:37:20 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -495,8 +495,6 @@ void	push_to_a(long int ***stack_a, long int **stack_b)
 	while (stack_len_b(&stack_b))
 	{
 		max = get_max_stack(&stack_b, &max_pos);
-		//if (stack_b[0][1] > stack_b[0][0] && max_pos > st_len / 2)
-		//	swap_b(&stack_b);
 		if (stack_b[0][0] == max)
 			p_a(&stack_a, &stack_b);
 		else

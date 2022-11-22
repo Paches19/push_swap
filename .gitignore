@@ -9,6 +9,6 @@ main.c
 push_swap
 checker.*
 checker_linux
-checker
+checker_Mac
 push_swap_tester/
 testerdebug
