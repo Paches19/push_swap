@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/22 13:49:39 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/01 12:32:29 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ static void	push_swap(int argc, long int **stack_a)
 	long int	*stack_b;
 	int			i;
 
+	argc = stack_len_b(&stack_a) + 1;
 	stack_b = (long int *)ft_calloc(argc, sizeof(long int));
 	if (!stack_b)
 		error_exit();
@@ -114,7 +115,7 @@ int	main(int argc, char **argv)
 	if (argc <= 1)
 		exit (-1);
 	else if (argc == 2)
-		return (0);
+		stack_a = check_one_argv(argc, argv);
 	else
 		stack_a = check_argv(argc, argv);
 	push_swap(argc, &stack_a);

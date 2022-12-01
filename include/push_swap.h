@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:51:30 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/22 16:15:51 by adpachec         ###   ########.fr       */
+/*   Updated: 2022/12/01 11:57:04 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 # include <limits.h>
+# include <stdio.h>
 
 void		ft_bzero(void *s, size_t n);
 void		*ft_calloc(size_t count, size_t size);
@@ -51,5 +52,11 @@ int			num_to_push(long int ***stack, int *num_pos, int group_len, \
 int argc);
 int			get_next_group_len(int argc, int group_len);
 int			get_max_stack(long int ***stack, int *max_pos);
+long int	*check_one_argv(int argc, char **argv);
+long int	*check_duplicate_order_one(int argc, char **argv);
+char		*ft_substr(char const *s, unsigned int start, size_t len);
+size_t		ft_strlen(const char *s);
+int			ft_argv_size(const char *s);
+char		**ft_split(char *s, char c);
 
 #endif

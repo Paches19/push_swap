@@ -6,7 +6,7 @@
 #    By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/11/08 12:03:07 by adpachec          #+#    #+#              #
-#    Updated: 2022/11/22 14:25:10 by adpachec         ###   ########.fr        #
+#    Updated: 2022/12/01 11:48:11 by adpachec         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ OBJ_DIR			= obj/
 
 SRC				= push_swap.c check_argv.c check_stacks.c get_num_stacks.c \
 					operations_1.c operations_2.c push_swap_utils.c \
-					push_swap_utils_2.c
+					push_swap_utils_2.c check_argv_one.c split_argv.c
 
 SRCS			= $(addprefix $(SRC_DIR), $(SRC))
 
