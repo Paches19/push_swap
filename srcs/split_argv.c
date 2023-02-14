@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 11:12:55 by adpachec          #+#    #+#             */
-/*   Updated: 2023/01/25 12:11:21 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/14 12:50:33 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ static void	ft_init_matrix(const char *s, char c, char **res, size_t words)
 		while (*s == c)
 			++s;
 		while (*s != c && *s != '\0')
+		{
 			++s;
+			++temp;
+		}
 		if (temp > 0)
 		{
 			res[j] = ft_substr(s - temp, 0, temp);
