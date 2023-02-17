@@ -1,14 +1,5 @@
-#hidden files
-.DS_store
-.git
-*.o
-*.a
 a.out
-*.txt
-main.c
-push_swap
-checker.*
-checker_linux
+*.o
+*.DS_Store
+push_swap_tester
 checker_Mac
-push_swap_tester/
-testerdebug

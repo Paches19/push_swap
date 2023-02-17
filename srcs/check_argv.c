@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:42:48 by adpachec          #+#    #+#             */
-/*   Updated: 2022/11/22 13:43:21 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/17 11:52:01 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ int	check_arg_order(int argc, long int **stack)
 	int	i;
 
 	i = -1;
-	while (++i < argc - 2)
+	argc = stack_len_b(&stack);
+	while (++i < argc)
 	{
 		if (stack[0][i] > stack[0][i + 1])
 			return (-1);
