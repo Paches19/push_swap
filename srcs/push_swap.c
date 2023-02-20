@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/20 11:08:30 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/20 11:50:53 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ int	main(int argc, char **argv)
 	long int	*stack_a;
 
 	if (argc <= 1)
-		exit (-1);
+		return(0);
 	else if (argc == 2)
 		stack_a = check_one_argv(argc, argv);
 	else
