@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/30 10:47:13 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/17 11:48:09 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/20 11:05:23 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ long int	*check_duplicate_order_one(int argc, char **argv)
 		}
 		++i;
 	}
+	free_matrix(split_argv);
 	check_arg_order(argc, &stack);
 	return (stack);
 }

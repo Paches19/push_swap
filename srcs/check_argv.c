@@ -6,11 +6,25 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:42:48 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/17 11:52:01 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/20 11:06:20 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
+
+void	free_matrix(char **matrix)
+{
+	size_t	i;
+
+	i = -1;
+	while (matrix[++i])
+	{
+		free(matrix[i]);
+		matrix[i] = NULL;
+	}
+	free(matrix);
+	matrix = NULL;
+}
 
 void	check_num(int argc, char **argv)
 {

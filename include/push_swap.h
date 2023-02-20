@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:51:30 by adpachec          #+#    #+#             */
-/*   Updated: 2023/01/25 13:00:17 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/20 11:06:47 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,6 @@ char		*ft_substr(char const *s, unsigned int start, size_t len);
 size_t		ft_strlen(const char *s);
 int			ft_argv_size(const char *s);
 char		**ft_split(char *s, char c);
+void		free_matrix(char **matrix);
 
 #endif
