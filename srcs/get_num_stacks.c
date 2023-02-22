@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 13:40:30 by adpachec          #+#    #+#             */
-/*   Updated: 2023/01/25 13:00:29 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 18:18:27 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	num_to_push(long int ***stack, int *num_pos, int group_len, int argc)
 int	get_next_group_len(int argc, int group_len)
 {
 	if (argc - 1 <= 200)
-		group_len += (argc - 1) / 6;
+		group_len += (argc - 1) / 5;
 	else
 		group_len += (argc - 1) / 12;
 	return (group_len);

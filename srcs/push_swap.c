@@ -6,7 +6,7 @@
 /*   By: adpachec <adpachec@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 14:37:59 by adpachec          #+#    #+#             */
-/*   Updated: 2023/02/20 15:59:10 by adpachec         ###   ########.fr       */
+/*   Updated: 2023/02/22 18:23:11 by adpachec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,8 @@ static void	groups_to_b(int argc, long int ***stack_a, long int **stack_b)
 			{
 				if (stack_a[0][0][0] <= group_len)
 					push_b(&stack_a, &stack_b);
-				else if (stack_a[0][0][1] <= INT_MAX)
-				{
-					if (num_pos <= stack_len(&stack_a) / 2)
-						rotate_stack(&stack_a);
-					else
-						reverse_rotate_stack(&stack_a);
-				}
+				else
+					rotate_stack(&stack_a);
 			}
 		}
 	}
